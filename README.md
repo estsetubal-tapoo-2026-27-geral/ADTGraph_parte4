@@ -23,7 +23,8 @@ Associa cada vértice a um índice de uma lista. A célula `matrix[i][j]` guarda
 ![Matriz de Adjacencias](images/Ed3.PNG)
 ## 1. Preparar e explorar o projeto
 
-Utilizem **Java 17 ou superior e Maven**. Abram a pasta que contém `pom.xml` e localizem:
+Utilizem **Java 17 ou superior e Maven**.
+Abram a pasta que contém `pom.xml` e localizem:
 
 | Ficheiro | O que analisar ou completar |
 | --- | --- |
@@ -34,11 +35,10 @@ Utilizem **Java 17 ou superior e Maven**. Abram a pasta que contém `pom.xml` e 
 
 O `Main` está no package `tapoo`; os restantes ficheiros estão em `tapoo.graph`, dentro de `src/main/java`.
 
-Podem utilizar **`Map`/`HashMap`, `List`/`ArrayList`, `Set`/`HashSet`, `Collection`, arrays e `Objects.equals`**. Utilizem o ADT fornecido neste projeto, sem acrescentar bibliotecas externas de grafos.
+Utilizem o ADT fornecido neste projeto, sem acrescentar bibliotecas externas de grafos.
 
-Estão fornecidos os construtores, as classes internas, os auxiliares de validação e pesquisa, as contagens, `vertices`, `edges`, `areAdjacent` e a sobrecarga de `insertEdge` que recebe elementos.
-
-**Nesta aula devem completar três métodos em cada implementação: nove métodos no total.** Os restantes TODO ficam para consolidação.
+Estão fornecidos os construtores, as classes internas, os auxiliares de validação e pesquisa, as contagens, `vertices`, `edges`, `areAdjacent`.
+**Nesta aula devem completar três métodos em cada implementação: nove métodos no total.** .
 
 ### Executar
 
