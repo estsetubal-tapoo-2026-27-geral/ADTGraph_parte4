@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * Undirected graph using AdjacencyList. Teaching starter for A3.4.
  * CLASS TODOs: insertVertex, insertEdge and incidentEdges.
- * CONSOLIDATION TODOs: opposite, removal and replacement.
+ * All other operations are supplied.
  * @param <V> vertex element type
  * @param <E> edge element type
  */
@@ -89,31 +89,48 @@ public class GraphAdjacencyList<V, E> implements Graph<V, E> {
 
     @Override
     public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) {
-        // TODO CONSOLIDATION: validate both references; return null if not incident.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: opposite");
+        checkVertex(v);
+        Vertex<V>[] ends = checkEdge(e).vertices();
+        if (ends[0] == v) return ends[1];
+        if (ends[1] == v) return ends[0];
+        return null;
     }
     @Override
     public V removeVertex(Vertex<V> v) {
-        // TODO CONSOLIDATION: remove all incident edges and invalidate v.
-        // Keep all collections consistent.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: removeVertex");
+        checkVertex(v);
+        for (Edge<E, V> edge : incidentEdges(v)) removeEdge(edge);
+        vertices.remove(v.element());
+        return v.element();
     }
     @Override
     public E removeEdge(Edge<E, V> e) {
-        // TODO CONSOLIDATION: remove every stored reference to e.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: removeEdge");
+        Vertex<V>[] ends = checkEdge(e).vertices();
+        checkVertex(ends[0]).incidentEdges.remove(e);
+        if (ends[1] != ends[0]) checkVertex(ends[1]).incidentEdges.remove(e);
+        return e.element();
     }
     @Override
     public V replace(Vertex<V> v, V newElement) {
-        // TODO CONSOLIDATION: validate, reject duplicates, return previous element.
-        // Update the map key as well as the stored element.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: replace vertex");
+        MyVertex vertex = checkVertex(v);
+        Vertex<V> existing = findVertex(newElement);
+        if (existing != null && existing != v)
+            throw new InvalidVertexException("A vertex with this element already exists.");
+        V previous = vertex.element;
+        vertices.remove(previous);
+        vertex.element = newElement;
+        vertices.put(newElement, vertex);
+        return previous;
     }
     @Override
     public E replace(Edge<E, V> e, E newElement) {
-        // TODO CONSOLIDATION: validate, reject duplicates, return previous element.
-        // Preserve the edge reference.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: replace edge");
+        MyEdge edge = (MyEdge) checkEdge(e);
+        for (Edge<E, V> current : edges()) {
+            if (current != e && Objects.equals(current.element(), newElement))
+                throw new InvalidEdgeException("An edge with this element already exists.");
+        }
+        E previous = edge.element;
+        edge.element = newElement;
+        return previous;
     }
 
     private MyVertex checkVertex(Vertex<V> vertex) {

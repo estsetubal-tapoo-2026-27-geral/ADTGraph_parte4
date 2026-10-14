@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * Undirected graph using Matrix. Teaching starter for A3.4.
  * CLASS TODOs: insertVertex, insertEdge and incidentEdges.
- * CONSOLIDATION TODOs: opposite, removal and replacement.
+ * All other operations are supplied.
  * @param <V> vertex element type
  * @param <E> edge element type
  */
@@ -90,31 +90,59 @@ public class GraphMatrix<V, E> implements Graph<V, E> {
 
     @Override
     public Vertex<V> opposite(Vertex<V> v, Edge<E, V> e) {
-        // TODO CONSOLIDATION: validate both references; return null if not incident.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: opposite");
+        checkVertex(v);
+        Vertex<V>[] ends = checkEdge(e).vertices();
+        if (ends[0] == v) return ends[1];
+        if (ends[1] == v) return ends[0];
+        return null;
     }
     @Override
     public V removeVertex(Vertex<V> v) {
-        // TODO CONSOLIDATION: remove all incident edges and invalidate v.
-        // Compact rows AND columns; clear the unused last row and column.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: removeVertex");
+        int removed = checkVertex(v);
+        int size = vertices.size();
+        // Rebuild without the removed row/column; unused cells stay null.
+        Edge<E, V>[][] compact = createMatrix(matrix.length);
+        for (int i = 0, ni = 0; i < size; i++) {
+            if (i == removed) continue;
+            for (int j = 0, nj = 0; j < size; j++) {
+                if (j == removed) continue;
+                compact[ni][nj++] = matrix[i][j];
+            }
+            ni++;
+        }
+        vertices.remove(removed);
+        matrix = compact;
+        return v.element();
     }
     @Override
     public E removeEdge(Edge<E, V> e) {
-        // TODO CONSOLIDATION: remove every stored reference to e.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: removeEdge");
+        Vertex<V>[] ends = checkEdge(e).vertices();
+        int i = checkVertex(ends[0]);
+        int j = checkVertex(ends[1]);
+        matrix[i][j] = null;
+        matrix[j][i] = null;
+        return e.element();
     }
     @Override
     public V replace(Vertex<V> v, V newElement) {
-        // TODO CONSOLIDATION: validate, reject duplicates, return previous element.
-        // Preserve the vertex reference and its matrix index.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: replace vertex");
+        MyVertex vertex = (MyVertex) vertices.get(checkVertex(v));
+        Vertex<V> existing = findVertex(newElement);
+        if (existing != null && existing != v)
+            throw new InvalidVertexException("A vertex with this element already exists.");
+        V previous = vertex.element;
+        vertex.element = newElement;
+        return previous;
     }
     @Override
     public E replace(Edge<E, V> e, E newElement) {
-        // TODO CONSOLIDATION: validate, reject duplicates, return previous element.
-        // Preserve the edge reference.
-        throw new UnsupportedOperationException("TODO CONSOLIDATION: replace edge");
+        MyEdge edge = (MyEdge) checkEdge(e);
+        for (Edge<E, V> current : edges()) {
+            if (current != e && Objects.equals(current.element(), newElement))
+                throw new InvalidEdgeException("An edge with this element already exists.");
+        }
+        E previous = edge.element;
+        edge.element = newElement;
+        return previous;
     }
 
     private int checkVertex(Vertex<V> vertex) {
